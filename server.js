@@ -9,7 +9,6 @@ const visitorSchema = new mongoose.Schema({
   name: String,
   date: { type: Date, default: Date.now }
 });
-
 const Visitor = mongoose.model('Visitor', visitorSchema);
 
 // Middlewares
@@ -41,6 +40,11 @@ app.post('/api/visitors', async (req, res) => {
   } catch (err) {
     res.status(500).send('Error saving visitor');
   }
+});
+
+// ✅ Serve index.html at root "/"
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(port, () => {
