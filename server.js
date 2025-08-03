@@ -38,7 +38,7 @@ app.post('/api/visitors', async (req, res) => {
     await visitor.save();
 
     // ✅ Redirect to portfolio.html after successful save
-    res.redirect('/portfolio.html');
+    res.status(201).json({ message: 'Saved' });
   } catch (err) {
     res.status(500).send('Error saving visitor');
   }
