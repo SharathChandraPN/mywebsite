@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body.login-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f2f2f2;
+      margin: 0;
+      position: relative;
+    }
+
+    .login-container {
+      background: white;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+      z-index: 2;
+    }
+
+    .login-container input,
+    .login-container button {
+      padding: 10px;
+      margin-top: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .login-container button {
+      background-color: #0077b6;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .login-container button:hover {
+      background-color: black;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: absolute;
+      background: rgba(255, 255, 255, 0.8);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .loading-overlay img {
+      width: 250px;
+      height: 250px;
+    }
+  </style>
+</head>
+<body class="login-page">
+
+  <div class="login-container" id="loginBox">
+    <h2>Welcome!</h2>
+    <p>Enter your name to view my portfolio:</p>
+    <form id="login-form">
+      <input type="text" id="username" placeholder="Your Name" required />
+      <button type="submit">Enter</button>
+    </form>
+  </div>
+
+  <!-- Loading GIF -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <img src="icons/loding.gif" alt="Loading..." />
+  </div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      if (!username) return;
+
+      // Show loading screen
+      document.getElementById('loginBox').style.display = 'none';
+      document.getElementById('loadingOverlay').style.display = 'flex';
+
+      // Save name in localStorage
+      localStorage.setItem('visitorName', username);
+
+      // Send to backend
+      fetch('https://your-backend-url.onrender.com/api/save-user', { // CHANGE THIS LINE 👇
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: username })
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to save');
+        return res.json();
+      })
+      .then(() => {
+        setTimeout(() => {
+          window.location.href = 'portfolio.html';
+        }, 1000);
+      })
+      .catch(err => {
+        alert('Server error. Try again.');
+        console.error(err);
+        document.getElementById('loginBox').style.display = 'block';
+        document.getElementById('loadingOverlay').style.display = 'none';
+      });
+    });
+  </script>
+</body>
+</html>
