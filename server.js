@@ -28,7 +28,7 @@ mongoose.connect(uri, {
 .then(() => console.log("✅ MongoDB Connected"))
 .catch(err => console.log("❌ MongoDB Error:", err));
 
-// Route to store visitor name
+// Route to store visitor name and redirect to portfolio
 app.post('/api/visitors', async (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).send('Name required');
@@ -36,7 +36,9 @@ app.post('/api/visitors', async (req, res) => {
   try {
     const visitor = new Visitor({ name });
     await visitor.save();
-    res.status(201).send('Visitor saved');
+
+    // ✅ Redirect to portfolio.html after successful save
+    res.redirect('/portfolio.html');
   } catch (err) {
     res.status(500).send('Error saving visitor');
   }
