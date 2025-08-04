@@ -5,6 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>sharathPortfolio</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    #logoutBtn {
+      margin-left: 20px;
+      padding: 5px 10px;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    #userDisplay {
+      font-weight: bold;
+      margin-top: 10px;
+      text-align: center;
+      color: #444;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -13,9 +30,9 @@
       <ul class="nav-links">
         <li><a href="portfolio.html">Home</a></li>
         <li><a href="projects.html">Projects</a></li>
-    <li><a href="skills.html">Skills</a></li>
-    <li><a href="contact.html">Contact</a></li>
-        
+        <li><a href="skills.html">Skills</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><button id="logoutBtn">Logout</button></li>
       </ul>
     </nav>
   </header>
@@ -23,24 +40,51 @@
   <section class="hero">
     <div class="hero-text">
       <h1><span>Frontend</span> Developer</h1>
-      <p>Hello, I’m Sharath Chandra P N. I’m a frontend developer with a passion for creating intuitive and engaging user interfaces. With experience in various web technologies and a keen eye for design, I focus on translating complex ideas into seamless and visually appealing digital experiences. I thrive on solving problems and continuously improving my skills to stay at the forefront of the industry.</p>
-      <a href="contact.html"" class="contact-btn">    Contact   </a>
+      <p id="userDescription">
+        Hello, I’m <span id="userDisplay">Sharath Chandra P N</span>. I’m a frontend developer with a passion for creating intuitive and engaging user interfaces. With experience in various web technologies and a keen eye for design, I focus on translating complex ideas into seamless and visually appealing digital experiences. I thrive on solving problems and continuously improving my skills to stay at the forefront of the industry.
+      </p>
+      <a href="contact.html" class="contact-btn">Contact</a>
     </div>
+
     <div class="hero-img">
       <div class="img-wrapper">
         <img src="myphoto.jpg" alt="Profile photo" />
       </div>
-      <p class="name-label">Sharath Chandra P N</p>
+      <p class="name-label" id="nameLabel">Sharath Chandra P N</p>
       <div class="edu-small">
-  <p>ECE | 2023 – 2027</p>
-</div>
-
-
+        <p>ECE | 2023 – 2027</p>
+      </div>
     </div>
   </section>
 
+  <script>
+    // Fetch current user
+    async function getCurrentUser() {
+      const res = await fetch("/current-user");
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById("userDisplay").innerText = data.name;
+        document.getElementById("nameLabel").innerText = data.name;
+      } else {
+        alert("Session expired. Redirecting to login...");
+        window.location.href = "/";
+      }
+    }
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      const res = await fetch("/logout", { method: "POST" });
+      if (res.ok) {
+        window.location.href = "/";
+      } else {
+        alert("Logout failed");
+      }
+    });
+
+    // On load
+    getCurrentUser();
+  </script>
+
   <script src="script.js"></script>
-
-
 </body>
 </html>
